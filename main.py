@@ -25,7 +25,7 @@ torch.cuda.empty_cache()
 access_token = "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"
 model = "meta-llama/Llama-2-7b-hf"
 
-!nvidia-smi
+# !nvidia-smi
 
 ## Load tokenizer
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
