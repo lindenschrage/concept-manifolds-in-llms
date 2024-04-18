@@ -134,14 +134,6 @@ for key in word_toplayerdict:
         if threshold in word_toplayerdict[key] and min_size != float('inf'):
             word_toplayerdict[key][threshold] = word_toplayerdict[key][threshold][:min_size]
 
-print(len(word_toplayerdict['dog']['top_5_words']))
-print(len(word_toplayerdict['apple']['top_5_words']))
-
-print(len(word_toplayerdict['dog']['top_10_words']))
-print(len(word_toplayerdict['apple']['top_10_words']))
-
-print(len(word_toplayerdict['dog']['top_20_words']))
-print(len(word_toplayerdict['apple']['top_20_words']))
 
 ## store top layer representations in json dictionary
 ## WORD TOP LAYERS
