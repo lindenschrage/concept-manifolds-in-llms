@@ -42,64 +42,67 @@ llama_model = LlamaForCausalLM.from_pretrained(
 
 """
 
-inputs_filepath = '/n/home09/lschrage/projects/llama/data_lm/short_inputs.json'
+inputs_filepath = '/n/home09/lschrage/projects/llama/data_lm/long_inputs.json'
 
 with open(inputs_filepath, 'r') as file:
     inputs_dict = json.load(file)
-
+print('input', inputs_dict.keys())
 ## Run model
 outputdict = {}
 prob_toplayerdict = {}
 probsdict = {}
 word_toplayerdict = {}
 
-WORD_THRESHOLD = [5, 50, 100]
-WORD_THRESHOLD_NAMES = {5: 'top_5_words', 50: 'top_50_words', 100: 'top_100_words'}
+WORD_THRESHOLD = [40, 50, 100]
+WORD_THRESHOLD_NAMES = {40: 'top_40_words', 50: 'top_50_words', 100: 'top_100_words'}
 
 PROBS_THRESHOLD = [10, 20, 50]
 PROBS_THRESHOLD_NAMES = {10: 'top_10_perc', 20: 'top_20_perc', 50: 'top_50_perc'}
-for key in inputs_dict:
 
-  target_word = key
-  tokens_target_word = llama_tokenizer.tokenize(target_word)
-  target_word_id =  llama_tokenizer.convert_tokens_to_ids(tokens_target_word)
-  #print('Target word: ', target_word)
-  #print('Target word id: ', target_word_id)
+with torch.no_grad():
+    for key in inputs_dict:
+        target_word = key
+        tokens_target_word = llama_tokenizer.tokenize(target_word)
+        target_word_id =  llama_tokenizer.convert_tokens_to_ids(tokens_target_word)
+       #print('Target word: ', target_word)
+      #print('Target word id: ', target_word_id)
 
-  outputs = []
-  prob_toplayers = {PROBS_THRESHOLD_NAMES[p]: [] for p in PROBS_THRESHOLD}  # Initialize as a dictionary
-  probs = []
-  word_toplayers = {WORD_THRESHOLD_NAMES[w]: [] for w in WORD_THRESHOLD}  # Initialize as a dictionary
+        outputs = []
+        prob_toplayers = {PROBS_THRESHOLD_NAMES[p]: [] for p in PROBS_THRESHOLD}  # Initialize as a dictionary
+        probs = []
+        word_toplayers = {WORD_THRESHOLD_NAMES[w]: [] for w in WORD_THRESHOLD}  # Initialize as a dictionary
 
 
-  for input in inputs_dict[key]:
+        for input in inputs_dict[key]:
 
-    tokens = llama_tokenizer(input, return_tensors="pt").to(device)
-    output=llama_model.forward(**tokens, return_dict = True)
-    outputs.append(output)
-    #print('User input: ', input)
-    #print('Tokens: ', tokens['input_ids'][0])
+            tokens = llama_tokenizer(input, return_tensors="pt").to(device)
+            output=llama_model.forward(**tokens, return_dict = True)
+            outputs.append(output)
+        #print('User input: ', input)
+        #print('Tokens: ', tokens['input_ids'][0])
 
-    logits = output['logits'][0][-1]
-    probabilities = F.softmax(logits, dim=-1)
-    final_layer_hidden_states = output['hidden_states'][-1]
-    last_hidden_state_for_last_token = final_layer_hidden_states[0, -1, :]
-    prob_target_word = probabilities[target_word_id].item()*100
-    probs.append(probabilities)
+            logits = output['logits'][0][-1]
+            probabilities = F.softmax(logits, dim=-1)
+            final_layer_hidden_states = output['hidden_states'][-1]
+            last_hidden_state_for_last_token = final_layer_hidden_states[0, -1, :]
+            prob_target_word = probabilities[target_word_id].item()*100
+            probs.append(probabilities)
 
     ###
 
-    for p_threshold in PROBS_THRESHOLD:
-      if prob_target_word > p_threshold:
-        prob_toplayers[PROBS_THRESHOLD_NAMES[p_threshold]].append(last_hidden_state_for_last_token)
-    ###
-    sorted_probabilities, sorted_indices = torch.sort(probabilities, descending=True)
-    top_preds = llama_tokenizer.convert_ids_to_tokens(sorted_indices)
+            
+            for p_threshold in PROBS_THRESHOLD:
+                if prob_target_word > p_threshold:
+                    prob_toplayers[PROBS_THRESHOLD_NAMES[p_threshold]].append(last_hidden_state_for_last_token)
+            ###
+            sorted_probabilities, sorted_indices = torch.sort(probabilities, descending=True)
+            top_preds = llama_tokenizer.convert_ids_to_tokens(sorted_indices)
 
-    for w_threshold in WORD_THRESHOLD:
-      top_x_words = top_preds[:w_threshold]
-      if '▁' + str(key) in top_x_words:
-        word_toplayers[WORD_THRESHOLD_NAMES[w_threshold]].append(last_hidden_state_for_last_token)
+            for w_threshold in WORD_THRESHOLD:
+                top_x_words = top_preds[:w_threshold]
+                if ('▁' + str(key) in top_x_words) or (str(key) in top_x_words):
+                    word_toplayers[WORD_THRESHOLD_NAMES[w_threshold]].append(last_hidden_state_for_last_token)
+
     ###
     #print('Logits: ', logits)
     #print('Probs: ', probabilities)
@@ -108,16 +111,19 @@ for key in inputs_dict:
     #print()
 
   ## outputs for every sentence for every key
-  outputdict[key] = outputs
+        outputdict[key] = outputs
 
   ## probabilities for vocabulary for every sentence for every key
-  probsdict[key] = probs
+        probsdict[key] = probs
 
   ## top layer representations for every sentence for every key (PERCENT PROBABILITY)
-  prob_toplayerdict[key] = prob_toplayers
+        prob_toplayerdict[key] = prob_toplayers
 
   ## top layer representations for every sentence for every key (TOP X NUMBER WORDS)
-  word_toplayerdict[key] = word_toplayers
+        word_toplayerdict[key] = word_toplayers
+print('word top layer', word_toplayerdict.keys())
+print(len(word_toplayerdict['dog']['top_40_words']))
+print(len(word_toplayerdict['apple']['top_40_words']))
 
 ## force list sizes to be the same accross thresholds
 threshold_min_sizes = {threshold: float('inf') for threshold in WORD_THRESHOLD_NAMES.values()}
@@ -144,7 +150,7 @@ np_dict = {
     }
     for outer_key, outer_value in word_toplayerdict.items()
 }
-
+#print('np-dict', np_dict.keys())
 ## PROB TOP LAYERS
 '''
 np_dict = {
@@ -160,18 +166,25 @@ data_dict = {}
 
 for key in np_dict:
     data_dict[f'{key}'] = np.array(np_dict[key]).T.tolist()
+print(data_dict.keys())
+print(len(data_dict['dog']['top_40_words']))
+print(len(data_dict['dog']['top_50_words']))
+print(len(data_dict['dog']['top_100_words']))
+print(len(data_dict['apple']['top_40_words']))
 
-output_filepath = '/n/home09/lschrage/projects/llama/outputs'
+
+output_filepath = '/n/home09/lschrage/projects/llama/outputs/outputs.json'
 
 with open(output_filepath, 'w') as f:
     json.dump(data_dict, f)
 
 """##Calculate Manifold Geometry"""
 
-with open('/n/home09/lschrage/projects/llama/outputs', 'r') as f:
+with open('/n/home09/lschrage/projects/llama/outputs/outputs.json', 'r') as f:
     manifolds = json.load(f)
-
-manifolds['dog'].keys()
+print("Keys in the loaded dictionary:", manifolds.keys())
+for key, value in manifolds.items():
+    print(f"Key: {key}, Type of value: {type(value)}, First few entries (if applicable): {str(value)[:100]}")
 
 def compute_geometry(manifolds):
     geometry = {}
@@ -179,6 +192,7 @@ def compute_geometry(manifolds):
         geometry[key] = {}
         for subkey, data in inner_dict.items():
             data_array = np.array(data)
+            print(data_array.shape)
             centroid = data_array.mean(axis=0)
             norm_manifold = data_array - centroid
 
@@ -274,7 +288,7 @@ look at readout vectors, different embeddings
 
 ## Extra code
 """
-
+"""
 # % Variance for each eigenvalue
 for key in geometry:
   for threshold in geometry[key]:
@@ -321,3 +335,4 @@ C_apple
 #C_apple_eigenval, C_apple_eigenvec = np.linalg.eig(C_apple)
 
 #C_dog_eigenval
+"""
