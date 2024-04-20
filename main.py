@@ -235,14 +235,18 @@ pp.pprint(bias)
 print("\nSignals:")
 pp.pprint(signal)
 
+def ndarray_to_list(obj):
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()  # Convert ndarray to list
+    raise TypeError('Object of type {o.__class__.__name__} is not JSON serializable')
+
 data = {
-    "Distances": dists,
-    "Normalized Distances": dists_norm,
-    "Dsvds (Participation Ratio)": dsvds,
-    "Biases": bias,
-    "Signals": signal
+    "Distances": {key: ndarray_to_list(value) for key, value in dists.items()},
+    "Normalized Distances": {key: ndarray_to_list(value) for key, value in dists_norm.items()},
+    "Dsvds (Participation Ratio)": {key: ndarray_to_list(value) for key, value in dsvds.items()},
+    "Biases": {key: ndarray_to_list(value) for key, value in bias.items()},
+    "Signals": {key: ndarray_to_list(value) for key, value in signal.items()}
 }
 
-
-with open('/n/home09/lschrage/projects/llama/outputs/outputs.json', 'w') as json_file:
+with open('/path/to/your/output/outputs.json', 'w') as json_file:
     json.dump(data, json_file, indent=4)
