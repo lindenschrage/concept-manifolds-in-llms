@@ -75,7 +75,8 @@ with torch.no_grad():
             probs.append(probabilities)
             
             for p_threshold in PROBS_THRESHOLD:
-                if prob_target_word > p_threshold:
+                #if prob_target_word > p_threshold:
+                if prob_target_word > 0:
                     prob_toplayers[PROBS_THRESHOLD_NAMES[p_threshold]].append(last_hidden_state_for_last_token)
 
             sorted_probabilities, sorted_indices = torch.sort(probabilities, descending=True)
@@ -120,7 +121,7 @@ for key in word_toplayerdict:
             if current_length < threshold_min_sizes[threshold]:
                 threshold_min_sizes[threshold] = current_length
 
-for key in word_toplayerdict:
+for key in prob_toplayerdict:
     for threshold, min_size in threshold_min_sizes.items():
         if threshold in word_toplayerdict[key] and min_size != float('inf'):
             word_toplayerdict[key][threshold] = word_toplayerdict[key][threshold][:min_size]
