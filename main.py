@@ -47,8 +47,8 @@ word_toplayerdict = {}
 WORD_THRESHOLD = [40, 50, 100]
 WORD_THRESHOLD_NAMES = {40: 'top_40_words', 50: 'top_50_words', 100: 'top_100_words'}
 
-PROBS_THRESHOLD = [10, 20, 50]
-PROBS_THRESHOLD_NAMES = {10: 'top_10_perc', 20: 'top_20_perc', 50: 'top_50_perc'}
+PROBS_THRESHOLD = [0, 10, 20]
+PROBS_THRESHOLD_NAMES = {0: 'top_0_perc', 10: 'top_10_perc', 20: 'top_20_perc'}
 
 with torch.no_grad():
     for key in inputs_dict:
@@ -75,8 +75,7 @@ with torch.no_grad():
             probs.append(probabilities)
             
             for p_threshold in PROBS_THRESHOLD:
-                #if prob_target_word > p_threshold:
-                if prob_target_word > 0:
+                if prob_target_word > p_threshold:
                     prob_toplayers[PROBS_THRESHOLD_NAMES[p_threshold]].append(last_hidden_state_for_last_token)
 
             sorted_probabilities, sorted_indices = torch.sort(probabilities, descending=True)
@@ -103,12 +102,12 @@ print('')
 print('')
 print('')
 print('prob top layer:', prob_toplayerdict.keys())
+print('length of prob_toplayerdict[dog][top_0_perc]', len(prob_toplayerdict['dog']['top_0_perc']))
+print('length of prob_toplayerdict[apple][top_0_perc]', len(prob_toplayerdict['apple']['top_0_perc']))
 print('length of prob_toplayerdict[dog][top_10_perc]', len(prob_toplayerdict['dog']['top_10_perc']))
 print('length of prob_toplayerdict[apple][top_10_perc]', len(prob_toplayerdict['apple']['top_10_perc']))
 print('length of prob_toplayerdict[dog][top_20_perc]', len(prob_toplayerdict['dog']['top_20_perc']))
 print('length of prob_toplayerdict[apple][top_20_perc]', len(prob_toplayerdict['apple']['top_20_perc']))
-print('length of prob_toplayerdict[dog][top_50_perc]', len(prob_toplayerdict['dog']['top_50_perc']))
-print('length of prob_toplayerdict[apple][top_50_perc]', len(prob_toplayerdict['apple']['top_50_perc']))
 
 
 ## force list sizes to be the same accross thresholds
@@ -121,7 +120,7 @@ for key in word_toplayerdict:
             if current_length < threshold_min_sizes[threshold]:
                 threshold_min_sizes[threshold] = current_length
 
-for key in prob_toplayerdict:
+for key in word_toplayerdict:
     for threshold, min_size in threshold_min_sizes.items():
         if threshold in word_toplayerdict[key] and min_size != float('inf'):
             word_toplayerdict[key][threshold] = word_toplayerdict[key][threshold][:min_size]
