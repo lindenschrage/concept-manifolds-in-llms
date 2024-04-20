@@ -235,18 +235,25 @@ pp.pprint(bias)
 print("\nSignals:")
 pp.pprint(signal)
 
-def ndarray_to_list(obj):
+def convert_to_serializable(obj):
     if isinstance(obj, np.ndarray):
         return obj.tolist()  # Convert ndarray to list
-    raise TypeError('Object of type {o.__class__.__name__} is not JSON serializable')
+    elif isinstance(obj, list):
+        return [convert_to_serializable(item) for item in obj]  # Recursively process list items
+    elif isinstance(obj, dict):
+        return {key: convert_to_serializable(value) for key, value in obj.items()}  # Recursively process dictionary items
+    else:
+        return obj  # Return the object as-is if it's already serializable
 
+# Now update your data dictionary to use this function
 data = {
-    "Distances": {key: ndarray_to_list(value) for key, value in dists.items()},
-    "Normalized Distances": {key: ndarray_to_list(value) for key, value in dists_norm.items()},
-    "Dsvds (Participation Ratio)": {key: ndarray_to_list(value) for key, value in dsvds.items()},
-    "Biases": {key: ndarray_to_list(value) for key, value in bias.items()},
-    "Signals": {key: ndarray_to_list(value) for key, value in signal.items()}
+    "Distances": convert_to_serializable(dists),
+    "Normalized Distances": convert_to_serializable(dists_norm),
+    "Dsvds (Participation Ratio)": convert_to_serializable(dsvds),
+    "Biases": convert_to_serializable(bias),
+    "Signals": convert_to_serializable(signal)
 }
 
-with open('/path/to/your/output/outputs.json', 'w') as json_file:
+# Writing the data to a JSON file
+with open('/n/home09/lschrage/projects/llama/outputs/outputs.json', 'w') as json_file:
     json.dump(data, json_file, indent=4)
