@@ -33,7 +33,7 @@ llama_model = LlamaForCausalLM.from_pretrained(
     output_hidden_states=True,
     output_attentions=True).to(device)
 
-input_filepath = '/n/home09/lschrage/projects/llama/data_lm/long_inputs.json'
+input_filepath = '/n/home09/lschrage/projects/llama/sompolinsky-research/long_inputs.json'
 
 with open(input_filepath, 'r') as file:
     inputs_dict = json.load(file)
