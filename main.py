@@ -151,6 +151,12 @@ data_dict = {}
 for key in word_np_dict:
     data_dict[f'{key}'] = np.array(word_np_dict[key]).T.tolist()
 
+with open('/n/home09/lschrage/projects/llama/outputs/manifolds.json', 'w') as json_file:
+    json.dump(data_dict, json_file, indent=4)
+#####################################################
+with open('/n/home09/lschrage/projects/llama/outputs/manifolds.json', 'r') as file:
+    open_data_dict = json.load(file)
+
 def compute_geometry(manifolds):
     geometry = {}
     for key, inner_dict in manifolds.items():
@@ -172,7 +178,7 @@ def compute_geometry(manifolds):
             }
     return geometry
 
-geometry = compute_geometry(data_dict)
+geometry = compute_geometry(open_data_dict)
 
 first_outer_key = next(iter(geometry))
 threshold_keys = geometry[first_outer_key].keys()
