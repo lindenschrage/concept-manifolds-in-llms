@@ -32,7 +32,7 @@ llama_model = LlamaForCausalLM.from_pretrained(
     token=access_token,
     output_hidden_states=True,
     output_attentions=True).to(device)
-
+ 
 input_filepath = '/n/home09/lschrage/projects/llama/sompolinsky-research/long_inputs.json'
 
 with open(input_filepath, 'r') as file:
@@ -48,7 +48,7 @@ WORD_THRESHOLD = [50, 100, 200]
 WORD_THRESHOLD_NAMES = {50: 'top_50_words', 100: 'top_100_words', 200: 'top_200_words'}
 
 PROBS_THRESHOLD = [1, 0.1, 0.01]
-PROBS_THRESHOLD_NAMES = {1: 'top_1_perc', 0.1: 'top_0.01_perc', 0.01: 'top_0.01_perc'}
+PROBS_THRESHOLD_NAMES = {1: 'top_1_perc', 0.1: 'top_0.1_perc', 0.01: 'top_0.01_perc'}
 
 with torch.no_grad():
     for key in inputs_dict:
