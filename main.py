@@ -153,7 +153,8 @@ for key in word_np_dict:
 
 with open('/n/home09/lschrage/projects/llama/outputs/manifolds.json', 'w') as json_file:
     json.dump(data_dict, json_file, indent=4)
-#####################################################
+
+    #####################################################
 with open('/n/home09/lschrage/projects/llama/outputs/manifolds.json', 'r') as file:
     open_data_dict = json.load(file)
 
@@ -243,15 +244,14 @@ pp.pprint(signal)
 
 def convert_to_serializable(obj):
     if isinstance(obj, np.ndarray):
-        return obj.tolist()  # Convert ndarray to list
+        return obj.tolist()  
     elif isinstance(obj, list):
-        return [convert_to_serializable(item) for item in obj]  # Recursively process list items
+        return [convert_to_serializable(item) for item in obj]  
     elif isinstance(obj, dict):
-        return {key: convert_to_serializable(value) for key, value in obj.items()}  # Recursively process dictionary items
+        return {key: convert_to_serializable(value) for key, value in obj.items()}  
     else:
-        return obj  # Return the object as-is if it's already serializable
+        return obj 
 
-# Now update your data dictionary to use this function
 data = {
     "Distances": convert_to_serializable(dists),
     "Normalized Distances": convert_to_serializable(dists_norm),
