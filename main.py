@@ -44,11 +44,11 @@ prob_toplayerdict = {}
 probsdict = {}
 word_toplayerdict = {}
 
-WORD_THRESHOLD = [40, 50, 100]
-WORD_THRESHOLD_NAMES = {40: 'top_40_words', 50: 'top_50_words', 100: 'top_100_words'}
+WORD_THRESHOLD = [50, 100, 200]
+WORD_THRESHOLD_NAMES = {50: 'top_50_words', 100: 'top_100_words', 200: 'top_200_words'}
 
-PROBS_THRESHOLD = [0, 10, 20]
-PROBS_THRESHOLD_NAMES = {0: 'top_0_perc', 10: 'top_10_perc', 20: 'top_20_perc'}
+PROBS_THRESHOLD = [1, 0.1, 0.01]
+PROBS_THRESHOLD_NAMES = {1: 'top_1_perc', 0.1: 'top_0.01_perc', 0.01: 'top_0.01_perc'}
 
 with torch.no_grad():
     for key in inputs_dict:
@@ -92,22 +92,22 @@ with torch.no_grad():
         word_toplayerdict[key] = word_toplayers
 
 print('word top layer', word_toplayerdict.keys())
-print('length of word_toplayerdict[dog][top_40_words]', len(word_toplayerdict['dog']['top_40_words']))
-print('length of word_toplayerdict[apple][top_40_words]', len(word_toplayerdict['apple']['top_40_words']))
 print('length of word_toplayerdict[dog][top_50_words]', len(word_toplayerdict['dog']['top_50_words']))
 print('length of word_toplayerdict[apple][top_50_words]', len(word_toplayerdict['apple']['top_50_words']))
 print('length of word_toplayerdict[dog][top_100_words]', len(word_toplayerdict['dog']['top_100_words']))
 print('length of word_toplayerdict[apple][top_100_words]', len(word_toplayerdict['apple']['top_100_words']))
+print('length of word_toplayerdict[dog][top_200_words]', len(word_toplayerdict['dog']['top_200_words']))
+print('length of word_toplayerdict[apple][top_200_words]', len(word_toplayerdict['apple']['top_200_words']))
 print('')
 print('')
 print('')
 print('prob top layer:', prob_toplayerdict.keys())
-print('length of prob_toplayerdict[dog][top_0_perc]', len(prob_toplayerdict['dog']['top_0_perc']))
-print('length of prob_toplayerdict[apple][top_0_perc]', len(prob_toplayerdict['apple']['top_0_perc']))
-print('length of prob_toplayerdict[dog][top_10_perc]', len(prob_toplayerdict['dog']['top_10_perc']))
-print('length of prob_toplayerdict[apple][top_10_perc]', len(prob_toplayerdict['apple']['top_10_perc']))
-print('length of prob_toplayerdict[dog][top_20_perc]', len(prob_toplayerdict['dog']['top_20_perc']))
-print('length of prob_toplayerdict[apple][top_20_perc]', len(prob_toplayerdict['apple']['top_20_perc']))
+print('length of prob_toplayerdict[dog][top_1_perc]', len(prob_toplayerdict['dog']['top_1_perc']))
+print('length of prob_toplayerdict[apple][top_1_perc]', len(prob_toplayerdict['apple']['top_1_perc']))
+print('length of prob_toplayerdict[dog][top_0.1_perc]', len(prob_toplayerdict['dog']['top_0.1_perc']))
+print('length of prob_toplayerdict[apple][top_0.1_perc]', len(prob_toplayerdict['apple']['top_0.1_perc']))
+print('length of prob_toplayerdict[dog][top_0.01_perc]', len(prob_toplayerdict['dog']['top_0.01_perc']))
+print('length of prob_toplayerdict[apple][top_0.01_perc]', len(prob_toplayerdict['apple']['top_0.01_perc']))
 
 
 ## force list sizes to be the same accross thresholds
