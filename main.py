@@ -51,6 +51,7 @@ for key in inputs_dict:
     toplayerdict[key] = toplayer
 '''
 toplayerdict = get_embedding_dict(inputs_dict, llama_model, llama_tokenizer)
+print(toplayerdict.keys())
 print(len(toplayerdict['dog']['top_10_words']))
 print(len(toplayerdict['dog']['top_50_words']))
 print(len(toplayerdict['dog']['top_100_words']))

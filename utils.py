@@ -29,6 +29,7 @@ def get_embedding_dict(inputs_dict, model, tokenizer):
     toplayerdict[key] = toplayer
   return toplayerdict
 
+
 def dict_to_json(toplayerdict):
     inner_dict = {
         outer_key: {
