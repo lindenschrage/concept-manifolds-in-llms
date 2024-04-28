@@ -11,7 +11,6 @@ def get_embedding_dict(inputs_dict, model, tokenizer):
     print("Starting:", key)
     toplayer = {thresholds[thresh]: [] for thresh in thresholds}
     for input in inputs_dict[key]:
-      print(input)
       tokens = tokenizer.encode(input, return_tensors="pt").to('cuda')
       with torch.no_grad():
         outputs = model(tokens)
@@ -51,7 +50,6 @@ def compute_geometry(manifolds):
         geometry[key] = {}
         for subkey, data in inner_dict.items():
             data_array = np.array(data)
-            print(data_array.shape)
             centroid = data_array.mean(axis=0)
             norm_manifold = data_array - centroid
             U, S, Vh = np.linalg.svd(norm_manifold, full_matrices=False)
@@ -114,7 +112,20 @@ def convert_to_serializable(obj):
     else:
         return obj 
 
-def sample_fifty_tensors(tensors):
-    if len(tensors) < 50:
-        raise ValueError("Not enough tensors to sample three.")
-    return random.sample(tensors, 50)
+def sample_tensors_from_dict(data, num_to_sample):
+
+    def sample_tensors(tensors, num):
+        if len(tensors) < num:
+            raise ValueError("Not enough tensors to sample the requested number.")
+        return random.sample(tensors, num)
+    new_data = {}
+    for key, thresholds in data.items():
+        new_data[key] = {}
+        for threshold, tensor_list in thresholds.items():
+            try:
+                sampled_tensors = sample_tensors(tensor_list, num_to_sample)
+                new_data[key][threshold] = sampled_tensors
+            except ValueError as e:
+                print(f"Error for {key}, {threshold}: {e}")
+                new_data[key][threshold] = None  
+    return new_data

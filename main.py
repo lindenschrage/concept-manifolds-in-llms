@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import pprint
 import random
-from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_fifty_tensors
+from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict
 
 access_token = "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"
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
@@ -38,40 +38,20 @@ print(len(toplayerdict['pen']['top_10_words']))
 print(len(toplayerdict['pen']['top_50_words']))
 print(len(toplayerdict['pen']['top_100_words']))
 
-new_data = {}
-for key, thresholds in toplayerdict.items():
-    new_data[key] = {}
-    for threshold, tensor_list in thresholds.items():
-        sampled_tensors = sample_fifty_tensors(tensor_list)
-        new_data[key][threshold] = sampled_tensors
+new_data = sample_tensors_from_dict(toplayerdict, 50)
 
 
 ## STORE AS JSON FILE
 data_dict = dict_to_json(new_data)
 
-with open('/n/home09/lschrage/projects/llama/outputs/manifolds.json', 'w') as json_file:
-    json.dump(data_dict, json_file, indent=4)
-
-
 #CALCULATE MANIFOLD GEOMETRY
-with open('/n/home09/lschrage/projects/llama/outputs/manifolds.json', 'r') as file:
-    open_data_dict = json.load(file)
-
-geometry = compute_geometry(open_data_dict)
+geometry = compute_geometry(data_dict)
 
 dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
 
 pp = pprint.PrettyPrinter(indent=4)
-print("Distances:")
-pp.pprint(dists)
-print("\nNormalized Distances:")
-pp.pprint(dists_norm)
 print("\nDsvds (Participation Ratio):")
 pp.pprint(dsvds)
-print("\nBiases:")
-pp.pprint(bias)
-print("\nSignals:")
-pp.pprint(signal)
 
 data = {
     "Distances": convert_to_serializable(dists),
