@@ -2,7 +2,7 @@ from transformers import LlamaTokenizer, LlamaForCausalLM
 import torch
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
-
+import random
 
 def get_embedding_dict(inputs_dict, model, tokenizer):
   thresholds = {10: 'top_10_words', 50: 'top_50_words', 100: 'top_100_words'}
@@ -113,3 +113,8 @@ def convert_to_serializable(obj):
         return {key: convert_to_serializable(value) for key, value in obj.items()}  
     else:
         return obj 
+
+def sample_fifty_tensors(tensors):
+    if len(tensors) < 50:
+        raise ValueError("Not enough tensors to sample three.")
+    return random.sample(tensors, 50)
