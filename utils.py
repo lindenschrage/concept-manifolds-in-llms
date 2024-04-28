@@ -7,7 +7,7 @@ import random
 import torch
 
 def get_embedding_dict(inputs_dict, model, tokenizer):
-    thresholds = {10: 'top_10_words', 50: 'top_50_words', 100: 'top_100_words'}
+    thresholds = {5: 'top_5_words', 20: 'top_20_words', 100: 'top_100_words'}
     toplayerdict = {}
 
     for key in inputs_dict:
@@ -35,8 +35,6 @@ def get_embedding_dict(inputs_dict, model, tokenizer):
             print(f"{threshold}: {len(toplayerdict[key][threshold])}")
 
     return toplayerdict
-
-
 
 def dict_to_json(toplayerdict):
     inner_dict = {
