@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import pprint
-from helpers import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable
+from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable
 
 access_token = "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"
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
