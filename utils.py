@@ -6,10 +6,8 @@ import random
 
 import torch
 
-def get_embedding_dict(inputs_dict, model, tokenizer):
-    thresholds = {5: 'top_5_words', 20: 'top_20_words', 100: 'top_100_words'}
+def get_embedding_dict(threshdolds, inputs_dict, model, tokenizer):
     toplayerdict = {}
-
     for key in inputs_dict:
         print(f"Starting: {key}")
         toplayer = {thresholds[thresh]: [] for thresh in thresholds}
