@@ -8,6 +8,8 @@ import torch
 
 def get_embedding_dict(thresholds, inputs_dict, model, tokenizer):
     toplayerdict = {}
+    min_samples = float('inf')  # Initialize to infinity for comparison
+
     for key in inputs_dict:
         print(f"Starting: {key}")
         toplayer = {thresholds[thresh]: [] for thresh in thresholds}
@@ -15,24 +17,30 @@ def get_embedding_dict(thresholds, inputs_dict, model, tokenizer):
             tokens = tokenizer.encode(input, return_tensors="pt").to('cuda')
             with torch.no_grad():
                 outputs = model(tokens)
-                predictions = outputs[0]
-            next_token_candidates_tensor = predictions[0, -1, :]
+            next_token_candidates_tensor = outputs[0, -1, :]
             for thresh in thresholds:
                 topk_candidates_indexes = torch.topk(next_token_candidates_tensor, thresh).indices.tolist()
                 topk_candidates_tokens = [tokenizer.decode([idx]).strip() for idx in topk_candidates_indexes]
                 topk_lower = [x.lower() for x in topk_candidates_tokens]
                 if str(key) in topk_lower:
                     curr_toplayer = outputs[2][-1][0, -1, :]
-                    toplayer[thresholds[thresh]].append(curr_toplayer)  
+                    toplayer[thresholds[thresh]].append(curr_toplayer)
+
+        # Update minimum sample size after processing each key
+        for threshold in thresholds.values():
+            if len(toplayer[threshold]) < min_samples:
+                min_samples = len(toplayer[threshold])
+
         toplayerdict[key] = toplayer
-    
+
     print("\nKeys in the top layer dictionary:", toplayerdict.keys())
     for key in toplayerdict:
         print(f"\nLengths for '{key}':")
         for threshold in thresholds.values():
             print(f"{threshold}: {len(toplayerdict[key][threshold])}")
 
-    return toplayerdict
+    return toplayerdict, min_samples
+
 
 def dict_to_json(toplayerdict):
     inner_dict = {
