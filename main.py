@@ -167,7 +167,6 @@ def compute_geometry(manifolds):
             print(data_array.shape)
             centroid = data_array.mean(axis=0)
             norm_manifold = data_array - centroid
-
             U, S, Vh = np.linalg.svd(norm_manifold, full_matrices=False)
             mean_squared_radius = np.mean(S**2)
 
