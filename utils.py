@@ -6,24 +6,24 @@ import random
 
 import torch
 
-def get_embedding_dict(threshdolds, inputs_dict, model, tokenizer):
+def get_embedding_dict(thresholds, inputs_dict, model, tokenizer):
     toplayerdict = {}
     for key in inputs_dict:
         print(f"Starting: {key}")
-        toplayer = {threshdolds[thresh]: [] for thresh in threshdolds}
+        toplayer = {thresholds[thresh]: [] for thresh in thresholds}
         for input in inputs_dict[key]:
             tokens = tokenizer.encode(input, return_tensors="pt").to('cuda')
             with torch.no_grad():
                 outputs = model(tokens)
                 predictions = outputs[0]
             next_token_candidates_tensor = predictions[0, -1, :]
-            for thresh in threshdolds:
+            for thresh in thresholds:
                 topk_candidates_indexes = torch.topk(next_token_candidates_tensor, thresh).indices.tolist()
                 topk_candidates_tokens = [tokenizer.decode([idx]).strip() for idx in topk_candidates_indexes]
                 topk_lower = [x.lower() for x in topk_candidates_tokens]
                 if str(key) in topk_lower:
                     curr_toplayer = outputs[2][-1][0, -1, :]
-                    toplayer[threshdolds[thresh]].append(curr_toplayer)  
+                    toplayer[thresholds[thresh]].append(curr_toplayer)  
         toplayerdict[key] = toplayer
     
     print("\nKeys in the top layer dictionary:", toplayerdict.keys())
