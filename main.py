@@ -10,7 +10,7 @@ import pprint
 import random
 from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict
 
-thresholds = {3: 'top_3_words', 20: 'top_20_words', 100: 'top_100_words'}
+thresholds = {3: 'top_3_words', 50: 'top_50_words', 100: 'top_100_words'}
 sample_size = 50
 
 access_token = "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"
@@ -21,6 +21,7 @@ llama_model = LlamaForCausalLM.from_pretrained(
     token=access_token,
     output_hidden_states=True).to('cuda')
 
+## OPEN 
 input_filepath = '/n/home09/lschrage/projects/llama/sompolinsky-research/long_inputs.json'
 
 with open(input_filepath, 'r') as file:
@@ -28,15 +29,13 @@ with open(input_filepath, 'r') as file:
 
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(thresholds, inputs_dict, llama_model, llama_tokenizer)
-
 new_data = sample_tensors_from_dict(toplayerdict, sample_size)
 
 ## STORE AS JSON FILE
 data_dict = dict_to_json(new_data)
 
-#CALCULATE MANIFOLD GEOMETRY
+# CALCULATE MANIFOLD GEOMETRY
 geometry = compute_geometry(data_dict)
-
 dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
 
 pp = pprint.PrettyPrinter(indent=4)
