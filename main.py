@@ -25,21 +25,8 @@ with open(input_filepath, 'r') as file:
 
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(inputs_dict, llama_model, llama_tokenizer)
-print(toplayerdict.keys())
-print(len(toplayerdict['dog']['top_10_words']))
-print(len(toplayerdict['dog']['top_50_words']))
-print(len(toplayerdict['dog']['top_100_words']))
-print("")
-print(len(toplayerdict['apple']['top_10_words']))
-print(len(toplayerdict['apple']['top_50_words']))
-print(len(toplayerdict['apple']['top_100_words']))
-print("")
-print(len(toplayerdict['pen']['top_10_words']))
-print(len(toplayerdict['pen']['top_50_words']))
-print(len(toplayerdict['pen']['top_100_words']))
 
 new_data = sample_tensors_from_dict(toplayerdict, 50)
-
 
 ## STORE AS JSON FILE
 data_dict = dict_to_json(new_data)

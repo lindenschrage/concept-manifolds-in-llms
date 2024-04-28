@@ -4,29 +4,38 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 import random
 
+import torch
+
 def get_embedding_dict(inputs_dict, model, tokenizer):
-  thresholds = {10: 'top_10_words', 50: 'top_50_words', 100: 'top_100_words'}
-  toplayerdict = {}
-  for key in inputs_dict:
-    print("Starting:", key)
-    toplayer = {thresholds[thresh]: [] for thresh in thresholds}
-    for input in inputs_dict[key]:
-      tokens = tokenizer.encode(input, return_tensors="pt").to('cuda')
-      with torch.no_grad():
-        outputs = model(tokens)
-        predictions = outputs[0]
-      next_token_candidates_tensor = predictions[0, -1, :]
-      for thresh in thresholds:
-        topk_candidates_indexes = torch.topk(
-            next_token_candidates_tensor, thresh).indices.tolist()
-        topk_candidates_tokens = \
-            [tokenizer.decode([idx]).strip() for idx in topk_candidates_indexes]
-        topk_lower = [x.lower() for x in topk_candidates_tokens]
-        if str(key) in topk_lower:
-          curr_toplayer = outputs[2][-1][0, -1, :]
-          toplayer[thresholds[thresh]].append(curr_toplayer)  
-    toplayerdict[key] = toplayer
-  return toplayerdict
+    thresholds = {10: 'top_10_words', 50: 'top_50_words', 100: 'top_100_words'}
+    toplayerdict = {}
+
+    for key in inputs_dict:
+        print(f"Starting: {key}")
+        toplayer = {thresholds[thresh]: [] for thresh in thresholds}
+        for input in inputs_dict[key]:
+            tokens = tokenizer.encode(input, return_tensors="pt").to('cuda')
+            with torch.no_grad():
+                outputs = model(tokens)
+                predictions = outputs[0]
+            next_token_candidates_tensor = predictions[0, -1, :]
+            for thresh in thresholds:
+                topk_candidates_indexes = torch.topk(next_token_candidates_tensor, thresh).indices.tolist()
+                topk_candidates_tokens = [tokenizer.decode([idx]).strip() for idx in topk_candidates_indexes]
+                topk_lower = [x.lower() for x in topk_candidates_tokens]
+                if str(key) in topk_lower:
+                    curr_toplayer = outputs[2][-1][0, -1, :]
+                    toplayer[thresholds[thresh]].append(curr_toplayer)  
+        toplayerdict[key] = toplayer
+    
+    print("\nKeys in the top layer dictionary:", toplayerdict.keys())
+    for key in toplayerdict:
+        print(f"\nLengths for '{key}':")
+        for threshold in thresholds.values():
+            print(f"{threshold}: {len(toplayerdict[key][threshold])}")
+
+    return toplayerdict
+
 
 
 def dict_to_json(toplayerdict):
@@ -39,7 +48,6 @@ def dict_to_json(toplayerdict):
     }
 
     data_dict = {}
-
     for key in inner_dict:
         data_dict[f'{key}'] = np.array(inner_dict[key]).T.tolist()
     return data_dict
@@ -101,7 +109,6 @@ def process_geometry(geometry):
 
     return dists, dists_norm, dsvds, bias, signal
 
-
 def convert_to_serializable(obj):
     if isinstance(obj, np.ndarray):
         return obj.tolist()  
@@ -113,7 +120,6 @@ def convert_to_serializable(obj):
         return obj 
 
 def sample_tensors_from_dict(data, num_to_sample):
-
     def sample_tensors(tensors, num):
         if len(tensors) < num:
             raise ValueError("Not enough tensors to sample the requested number.")
