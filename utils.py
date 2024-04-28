@@ -5,10 +5,10 @@ from scipy.spatial.distance import pdist, squareform
 
 
 def get_embedding_dict(inputs_dict, model, tokenizer):
+  thresholds = {10: 'top_10_words', 50: 'top_50_words', 100: 'top_100_words'}
+  toplayerdict = {}
   for key in inputs_dict:
     print("Starting:", key)
-    thresholds = {10: 'top_10_words', 50: 'top_50_words', 100: 'top_100_words'}
-    toplayerdict = {}
     toplayer = {thresholds[thresh]: [] for thresh in thresholds}
     for input in inputs_dict[key]:
       print(input)
