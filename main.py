@@ -34,7 +34,7 @@ with open(input_filepath, 'r') as file:
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(thresholds, inputs_dict, llama_model, llama_tokenizer)
 
-for _ in range(5):
+for r in range(5):
     new_data = sample_tensors_from_dict(toplayerdict, sample_size)
 
     ## STORE AS JSON FILE
@@ -43,16 +43,11 @@ for _ in range(5):
     # CALCULATE MANIFOLD GEOMETRY
     geometry = compute_geometry(data_dict)
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
-
-    for threshold, values in dsvds.items():
-        results[threshold][threshold].append(values)
+    print(dsvds)
+    for key in ['top_5_words', 'top_100_words', 'top_300_words']:
+        results[key].extend(dsvds[key])
    
-averaged_results = {}
-for threshold in thresholds:
-    all_runs = results[threshold][threshold]
-    all_runs_array = np.array(all_runs)
-    averaged_results[threshold] = np.mean(all_runs_array, axis=0)
-
+print(results)
 # Print results
 print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for threshold, averages in averaged_results.items():
