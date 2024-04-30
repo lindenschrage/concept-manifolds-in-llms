@@ -11,7 +11,7 @@ import random
 from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
-sample_size = 60
+sample_size = 67
 
 access_token = "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"
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
