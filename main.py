@@ -42,23 +42,19 @@ for _ in range(5):
     # CALCULATE MANIFOLD GEOMETRY
     geometry = compute_geometry(data_dict)
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
-
-    results["Distances"].append(dists)
-    results["Normalized Distances"].append(dists_norm)
-    results["Dsvds (Participation Ratio)"].append(dsvds)
-    results["Biases"].append(bias)
-    results["Signals"].append(signal)
+    for metric, data in zip(["Distances", "Normalized Distances", "Dsvds (Participation Ratio)", "Biases", "Signals"], 
+                            [dists, dists_norm, dsvds, bias, signal]):
+        results[metric]["run"].append(data)
 
 averaged_results = {}
-for key, value in results.items():
-    # Average across lists of lists
-    averaged_results[key] = np.mean([np.mean(v) for v in value], axis=0)
+for metric, data in results.items():
+    averaged_results[metric] = np.mean([np.mean(v) for v in data["run"]], axis=0)
 
 # Print results
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(averaged_results)
 
-# Optionally, plot the average participation ratios
+'''
 plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
 
 data = {
@@ -74,3 +70,4 @@ with open('/n/home09/lschrage/projects/llama/outputs/outputs.json', 'w') as json
     json.dump(data, json_file, indent=4)
 
 
+'''
