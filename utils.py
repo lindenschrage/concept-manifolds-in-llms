@@ -3,7 +3,9 @@ import torch
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 import random
-
+import json
+import pandas as pd
+import matplotlib.pyplot as plt
 import torch
 
 def get_embedding_dict(thresholds, inputs_dict, model, tokenizer):
@@ -131,3 +133,15 @@ def sample_tensors_from_dict(data, num_to_sample):
                 print(f"Error for {key}, {threshold}: {e}")
                 new_data[key][threshold] = None  
     return new_data
+
+def plot_participation_ratios(data):
+    df = pd.DataFrame(data)
+    plt.figure(figsize=(12, 8))
+    for column in df.columns:
+        plt.plot(df[column], marker='o', label=column)
+    plt.title('Participation Ratios Across Different Word Groups')
+    plt.xlabel('Sample Index')
+    plt.ylabel('Participation Ratio')
+    plt.legend(title='Word Groups')
+    plt.grid(True)
+    plt.show()

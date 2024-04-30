@@ -42,6 +42,8 @@ pp = pprint.PrettyPrinter(indent=4)
 print("\nDsvds (Participation Ratio):")
 pp.pprint(dsvds)
 
+plot_participation_ratios(dsvds)
+
 data = {
     "Distances": convert_to_serializable(dists),
     "Normalized Distances": convert_to_serializable(dists_norm),
@@ -53,3 +55,5 @@ data = {
 #WRITE TO JSON
 with open('/n/home09/lschrage/projects/llama/outputs/outputs.json', 'w') as json_file:
     json.dump(data, json_file, indent=4)
+
+
