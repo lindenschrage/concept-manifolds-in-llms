@@ -13,7 +13,7 @@ from collections import defaultdict
 
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
-results = defaultdict(lambda: {'top_5_words': [], 'top_100_words': [], 'top_300_words': []})
+results = {key: [] for key in thresholds.values()}
 
 sample_size = 76
 
@@ -44,14 +44,12 @@ for r in range(5):
     geometry = compute_geometry(data_dict)
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
     print(dsvds)
-    for key in ['top_5_words', 'top_100_words', 'top_300_words']:
-        results[key].extend(dsvds[key])
-   
+    for threshold_name, values in dsvds.items():
+        results[threshold_name].append(values)
+
 print(results)
 # Print results
-print("Averaged Dsvds (Participation Ratio) for each threshold:")
-for threshold, averages in averaged_results.items():
-    print(f"{threshold}: {averages}")
+
 
 '''
 plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
