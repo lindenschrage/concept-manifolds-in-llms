@@ -121,7 +121,7 @@ def sample_tensors_from_dict(data, num_to_sample):
     def sample_tensors(tensors, num):
         if len(tensors) < num:
             raise ValueError("Not enough tensors to sample the requested number.")
-        return random.sample(tensors, num)
+        return random.choice(tensors, num)
     new_data = {}
     for key, thresholds in data.items():
         new_data[key] = {}
