@@ -47,9 +47,9 @@ for _ in range(5):
     for threshold, values in dsvds.items():
         results[threshold][threshold].append(values)
    
-# Print results
 averaged_results = {}
-for threshold, all_runs in results.items():
+for threshold in thresholds:
+    all_runs = results[threshold][threshold]
     all_runs_array = np.array(all_runs)
     averaged_results[threshold] = np.mean(all_runs_array, axis=0)
 
