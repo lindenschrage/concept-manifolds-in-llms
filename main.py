@@ -41,13 +41,13 @@ for r in range(30):
     ## STORE AS JSON FILE
     data_dict = dict_to_json(new_data)
 
-    # CALCULATE MANIFOLD GEOMETRY
+    ## CALCULATE MANIFOLD GEOMETRY
     geometry = compute_geometry(data_dict)
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
     for threshold_name, values in dsvds.items():
         results[threshold_name].append(values)
 
-# AVERAGE RESULTS
+## AVERAGE RESULTS
 averaged_results = {}
 for key, arrays in results.items():
     averaged_results[key] = np.mean(np.array(arrays), axis=0)
@@ -55,4 +55,5 @@ print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for key, avg in averaged_results.items():
     print(f"{key}: {avg}")
 
+## GRAPH RESULTS
 plot_dsvds(averaged_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png')
