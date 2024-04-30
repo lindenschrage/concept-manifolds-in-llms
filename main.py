@@ -35,7 +35,7 @@ with open(input_filepath, 'r') as file:
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(thresholds, inputs_dict, llama_model, llama_tokenizer)
 
-for r in range(30):
+for r in range(100):
     new_data = sample_tensors_from_dict(toplayerdict, sample_size)
 
     ## STORE AS JSON FILE
