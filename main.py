@@ -45,7 +45,7 @@ for _ in range(5):
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
 
     for threshold, values in dsvds.items():
-        results[threshold].append(values)
+        results[threshold][threshold].append(values)
    
 # Print results
 averaged_results = {}
