@@ -56,7 +56,6 @@ print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for key, avg in averaged_results.items():
     print(f"{key}: {avg}")
 
-plt.style.use('seaborn-darkgrid')  
 fig, ax = plt.subplots(figsize=(12, 8))
 
 thresholds = ['top_5_words', 'top_100_words', 'top_300_words']
