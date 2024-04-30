@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import pprint
 import random
-from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_participation_ratios
+from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_dsvds
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
@@ -44,53 +44,15 @@ for r in range(10):
     # CALCULATE MANIFOLD GEOMETRY
     geometry = compute_geometry(data_dict)
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
-    print(dsvds)
     for threshold_name, values in dsvds.items():
         results[threshold_name].append(values)
 
+# AVERAGE RESULTS
 averaged_results = {}
 for key, arrays in results.items():
     averaged_results[key] = np.mean(np.array(arrays), axis=0)
-
 print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for key, avg in averaged_results.items():
     print(f"{key}: {avg}")
 
-fig, ax = plt.subplots(figsize=(12, 8))
-
-thresholds = ['top_5_words', 'top_100_words', 'top_300_words']
-indices = np.arange(len(averaged_results[thresholds[0]]))  
-bar_width = 0.25  
-
-colors = ['#6aabd1', '#b6d957', '#ef8354']
-
-for i, threshold in enumerate(thresholds):
-    bar_positions = indices + i * bar_width
-    ax.bar(bar_positions, averaged_results[threshold], width=bar_width, label=threshold.replace('_', ' ').title(), color=colors[i])
-
-ax.set_xlabel('Concepts', fontsize=14, fontweight='bold')
-ax.set_ylabel('Dsvds (Participation Ratio)', fontsize=14, fontweight='bold')
-ax.set_title('Dsvds Averaged Values for Different Thresholds', fontsize=16, fontweight='bold')
-ax.set_xticks(indices + bar_width / 2) 
-ax.set_xticklabels(['Dog', 'Apple', 'Pen'], fontsize=12)  
-ax.legend(title='Thresholds', title_fontsize='13', fontsize='11')
-
-plt.savefig('/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', format='png', bbox_inches='tight')
-
-'''
-plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
-
-data = {
-    "Distances": convert_to_serializable(dists),
-    "Normalized Distances": convert_to_serializable(dists_norm),
-    "Dsvds (Participation Ratio)": convert_to_serializable(dsvds),
-    "Biases": convert_to_serializable(bias),
-    "Signals": convert_to_serializable(signal)
-}
-
-#WRITE TO JSON
-with open('/n/home09/lschrage/projects/llama/outputs/outputs.json', 'w') as json_file:
-    json.dump(data, json_file, indent=4)
-
-
-'''
+plot_dsvds(averaged_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png')

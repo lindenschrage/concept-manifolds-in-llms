@@ -134,14 +134,19 @@ def sample_tensors_from_dict(data, num_to_sample):
                 new_data[key][threshold] = None  
     return new_data
 
-def plot_participation_ratios(data):
-    df = pd.DataFrame(data)
-    plt.figure(figsize=(12, 8))
-    for column in df.columns:
-        plt.plot(df[column], marker='o', label=column)
-    plt.title('Participation Ratios Across Different Word Groups')
-    plt.xlabel('Sample Index')
-    plt.ylabel('Participation Ratio')
-    plt.legend(title='Word Groups')
-    plt.grid(True)
-    plt.show()
+def plot_dsvds(data, save_path):
+    fig, ax = plt.subplots(figsize=(12, 8))
+    thresholds = list(data.keys())
+    indices = np.arange(len(data[thresholds[0]]))  
+    bar_width = 0.25
+    colors = ['#6aabd1', '#b6d957', '#ef8354']
+    for i, threshold in enumerate(thresholds):
+        bar_positions = indices + i * bar_width
+        ax.bar(bar_positions, data[threshold], width=bar_width, label=threshold.replace('_', ' ').title(), color=colors[i])
+    ax.set_xlabel('Concepts', fontsize=14, fontweight='bold')
+    ax.set_ylabel('Dsvds (Participation Ratio)', fontsize=14, fontweight='bold')
+    ax.set_title('Dsvds Averaged Values for Different Thresholds', fontsize=16, fontweight='bold')
+    ax.set_xticks(indices + bar_width / 2)
+    ax.set_xticklabels(['Dog', 'Apple', 'Pen'], fontsize=12)
+    ax.legend(title='Thresholds', title_fontsize='13', fontsize='11', loc='upper left', bbox_to_anchor=(1, 1))
+    plt.savefig(save_path, format='png', bbox_inches='tight')
