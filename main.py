@@ -42,13 +42,25 @@ for _ in range(5):
     # CALCULATE MANIFOLD GEOMETRY
     geometry = compute_geometry(data_dict)
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
-    for metric, data in zip(["Distances", "Normalized Distances", "Dsvds (Participation Ratio)", "Biases", "Signals"], 
-                            [dists, dists_norm, dsvds, bias, signal]):
-        results[metric]["run"].append(data)
+    print("Distances Type:", type(dists), "Data:", dists)
+    print("Normalized Distances Type:", type(dists_norm), "Data:", dists_norm)
+    print("Dsvds Type:", type(dsvds), "Data:", dsvds)
+    print("Biases Type:", type(bias), "Data:", bias)
+    print("Signals Type:", type(signal), "Data:", signal)
+
+    results["Distances"]["run"].append(dists)
+    results["Normalized Distances"]["run"].append(dists_norm)
+    results["Dsvds (Participation Ratio)"]["run"].append(dsvds)
+    results["Biases"]["run"].append(bias)
+    results["Signals"]["run"].append(signal)
+
 
 averaged_results = {}
 for metric, data in results.items():
-    averaged_results[metric] = np.mean([np.mean(v) for v in data["run"]], axis=0)
+    if isinstance(data["run"][0], (list, np.ndarray)):  # Check if data is numerical
+        averaged_results[metric] = np.mean([np.mean(v) for v in data["run"] if isinstance(v, (list, np.ndarray))], axis=0)
+    else:
+        print(f"Error: Data in {metric} is not numerical.")
 
 # Print results
 pp = pprint.PrettyPrinter(indent=4)
