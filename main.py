@@ -47,9 +47,13 @@ for r in range(5):
     for threshold_name, values in dsvds.items():
         results[threshold_name].append(values)
 
-print(results)
-# Print results
+averaged_results = {}
+for key, arrays in results.items():
+    averaged_results[key] = np.mean(np.array(arrays), axis=0)
 
+print("Averaged Dsvds (Participation Ratio) for each threshold:")
+for key, avg in averaged_results.items():
+    print(f"{key}: {avg}")
 
 '''
 plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
