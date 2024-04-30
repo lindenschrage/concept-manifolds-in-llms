@@ -13,7 +13,7 @@ from collections import defaultdict
 
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
-sample_size = 70
+sample_size = 76
 
 access_token = "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"
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
