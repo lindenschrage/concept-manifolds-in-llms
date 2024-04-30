@@ -13,6 +13,8 @@ from collections import defaultdict
 
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
+results = defaultdict(lambda: {'top_5_words': [], 'top_100_words': [], 'top_300_words': []})
+
 sample_size = 76
 
 access_token = "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"
@@ -32,7 +34,6 @@ with open(input_filepath, 'r') as file:
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(thresholds, inputs_dict, llama_model, llama_tokenizer)
 
-results = defaultdict(lambda: defaultdict(list))
 for _ in range(5):
     new_data = sample_tensors_from_dict(toplayerdict, sample_size)
 
@@ -49,7 +50,6 @@ for _ in range(5):
 # Print results
 averaged_results = {}
 for threshold, all_runs in results.items():
-    # Convert list of lists into a numpy array for easy mean calculation
     all_runs_array = np.array(all_runs)
     averaged_results[threshold] = np.mean(all_runs_array, axis=0)
 
