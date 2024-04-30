@@ -42,29 +42,21 @@ for _ in range(5):
     # CALCULATE MANIFOLD GEOMETRY
     geometry = compute_geometry(data_dict)
     dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
-    print("Distances Type:", type(dists), "Data:", dists)
-    print("Normalized Distances Type:", type(dists_norm), "Data:", dists_norm)
-    print("Dsvds Type:", type(dsvds), "Data:", dsvds)
-    print("Biases Type:", type(bias), "Data:", bias)
-    print("Signals Type:", type(signal), "Data:", signal)
 
-    results["Distances"]["run"].append(dists)
-    results["Normalized Distances"]["run"].append(dists_norm)
-    results["Dsvds (Participation Ratio)"]["run"].append(dsvds)
-    results["Biases"]["run"].append(bias)
-    results["Signals"]["run"].append(signal)
-
-
+    for threshold, values in dsvds.items():
+        results[threshold].append(values)
+   
+# Print results
 averaged_results = {}
-for metric, data in results.items():
-    if isinstance(data["run"][0], (list, np.ndarray)):  # Check if data is numerical
-        averaged_results[metric] = np.mean([np.mean(v) for v in data["run"] if isinstance(v, (list, np.ndarray))], axis=0)
-    else:
-        print(f"Error: Data in {metric} is not numerical.")
+for threshold, all_runs in results.items():
+    # Convert list of lists into a numpy array for easy mean calculation
+    all_runs_array = np.array(all_runs)
+    averaged_results[threshold] = np.mean(all_runs_array, axis=0)
 
 # Print results
-pp = pprint.PrettyPrinter(indent=4)
-pp.pprint(averaged_results)
+print("Averaged Dsvds (Participation Ratio) for each threshold:")
+for threshold, averages in averaged_results.items():
+    print(f"{threshold}: {averages}")
 
 '''
 plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
