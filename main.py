@@ -79,7 +79,7 @@ ax.set_xticklabels([f'Concept {i+1}' for i in indices])
 ax.legend(title='Thresholds')
 
 # Show the plot
-plt.show()
+plt.savefig('/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', format='png')
 
 '''
 plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
