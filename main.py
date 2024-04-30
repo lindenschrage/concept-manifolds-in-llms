@@ -9,6 +9,8 @@ from scipy.spatial.distance import pdist, squareform
 import pprint
 import random
 from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_participation_ratios
+from collections import defaultdict
+
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
 sample_size = 70
@@ -29,20 +31,35 @@ with open(input_filepath, 'r') as file:
 
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(thresholds, inputs_dict, llama_model, llama_tokenizer)
-new_data = sample_tensors_from_dict(toplayerdict, sample_size)
 
-## STORE AS JSON FILE
-data_dict = dict_to_json(new_data)
+results = defaultdict(lambda: defaultdict(list))
+for _ in range(5):
+    new_data = sample_tensors_from_dict(toplayerdict, sample_size)
 
-# CALCULATE MANIFOLD GEOMETRY
-geometry = compute_geometry(data_dict)
-dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
+    ## STORE AS JSON FILE
+    data_dict = dict_to_json(new_data)
 
+    # CALCULATE MANIFOLD GEOMETRY
+    geometry = compute_geometry(data_dict)
+    dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
+
+    results["Distances"].append(dists)
+    results["Normalized Distances"].append(dists_norm)
+    results["Dsvds (Participation Ratio)"].append(dsvds)
+    results["Biases"].append(bias)
+    results["Signals"].append(signal)
+
+averaged_results = {}
+for key, value in results.items():
+    # Average across lists of lists
+    averaged_results[key] = np.mean([np.mean(v) for v in value], axis=0)
+
+# Print results
 pp = pprint.PrettyPrinter(indent=4)
-print("\nDsvds (Participation Ratio):")
-pp.pprint(dsvds)
+pp.pprint(averaged_results)
 
-plot_participation_ratios(dsvds)
+# Optionally, plot the average participation ratios
+plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
 
 data = {
     "Distances": convert_to_serializable(dists),
