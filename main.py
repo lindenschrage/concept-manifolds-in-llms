@@ -10,6 +10,7 @@ import pprint
 import random
 from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_participation_ratios
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
@@ -54,6 +55,31 @@ for key, arrays in results.items():
 print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for key, avg in averaged_results.items():
     print(f"{key}: {avg}")
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Data preparation
+thresholds = ['top_5_words', 'top_100_words', 'top_300_words']
+indices = np.arange(len(averaged_results[thresholds[0]]))  # the number of bars per group
+bar_width = 0.25  # width of bars
+
+# Plotting
+for i, threshold in enumerate(thresholds):
+    # Calculate the correct position for each bar based on its group
+    bar_positions = indices + i * bar_width
+    # Plotting each group of bars
+    ax.bar(bar_positions, averaged_results[threshold], width=bar_width, label=threshold)
+
+# Labeling and aesthetics
+ax.set_xlabel('Concepts')
+ax.set_ylabel('Dsvds (Participation Ratio)')
+ax.set_title('Dsvds Averaged Values for Different Thresholds')
+ax.set_xticks(indices + bar_width)  # positioning x-ticks in the center of the groups of bars
+ax.set_xticklabels([f'Concept {i+1}' for i in indices])
+ax.legend(title='Thresholds')
+
+# Show the plot
+plt.show()
 
 '''
 plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
