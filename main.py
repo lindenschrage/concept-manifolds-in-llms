@@ -56,29 +56,26 @@ print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for key, avg in averaged_results.items():
     print(f"{key}: {avg}")
 
-fig, ax = plt.subplots(figsize=(10, 6))
+plt.style.use('seaborn-darkgrid')  
+fig, ax = plt.subplots(figsize=(12, 8))
 
-# Data preparation
 thresholds = ['top_5_words', 'top_100_words', 'top_300_words']
-indices = np.arange(len(averaged_results[thresholds[0]]))  # the number of bars per group
-bar_width = 0.25  # width of bars
+indices = np.arange(len(averaged_results[thresholds[0]]))  
+bar_width = 0.25 
 
-# Plotting
+colors = ['#6aabd1', '#b6d957', '#ef8354']
+
 for i, threshold in enumerate(thresholds):
-    # Calculate the correct position for each bar based on its group
     bar_positions = indices + i * bar_width
-    # Plotting each group of bars
-    ax.bar(bar_positions, averaged_results[threshold], width=bar_width, label=threshold)
+    ax.bar(bar_positions, averaged_results[threshold], width=bar_width, label=threshold.replace('_', ' ').title(), color=colors[i])
 
-# Labeling and aesthetics
-ax.set_xlabel('Concepts')
-ax.set_ylabel('Dsvds (Participation Ratio)')
-ax.set_title('Dsvds Averaged Values for Different Thresholds')
-ax.set_xticks(indices + bar_width)  # positioning x-ticks in the center of the groups of bars
-ax.set_xticklabels([f'Concept {i+1}' for i in indices])
-ax.legend(title='Thresholds')
+ax.set_xlabel('Concepts', fontsize=14, fontweight='bold')
+ax.set_ylabel('Dsvds (Participation Ratio)', fontsize=14, fontweight='bold')
+ax.set_title('Dsvds Averaged Values for Different Thresholds', fontsize=16, fontweight='bold')
+ax.set_xticks(indices + bar_width) 
+ax.set_xticklabels([f'Concept {i+1}' for i in indices], fontsize=12)
+ax.legend(title='Thresholds', title_fontsize='13', fontsize='11')
 
-# Show the plot
 plt.savefig('/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', format='png')
 
 '''
