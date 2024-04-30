@@ -35,7 +35,7 @@ with open(input_filepath, 'r') as file:
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(thresholds, inputs_dict, llama_model, llama_tokenizer)
 
-for r in range(5):
+for r in range(10):
     new_data = sample_tensors_from_dict(toplayerdict, sample_size)
 
     ## STORE AS JSON FILE
@@ -60,7 +60,7 @@ fig, ax = plt.subplots(figsize=(12, 8))
 
 thresholds = ['top_5_words', 'top_100_words', 'top_300_words']
 indices = np.arange(len(averaged_results[thresholds[0]]))  
-bar_width = 0.25 
+bar_width = 0.25  
 
 colors = ['#6aabd1', '#b6d957', '#ef8354']
 
@@ -71,11 +71,11 @@ for i, threshold in enumerate(thresholds):
 ax.set_xlabel('Concepts', fontsize=14, fontweight='bold')
 ax.set_ylabel('Dsvds (Participation Ratio)', fontsize=14, fontweight='bold')
 ax.set_title('Dsvds Averaged Values for Different Thresholds', fontsize=16, fontweight='bold')
-ax.set_xticks(indices + bar_width) 
-ax.set_xticklabels([f'Concept {i+1}' for i in indices], fontsize=12)
+ax.set_xticks(indices + bar_width / 2) 
+ax.set_xticklabels(['Dog', 'Apple', 'Pen'], fontsize=12)  
 ax.legend(title='Thresholds', title_fontsize='13', fontsize='11')
 
-plt.savefig('/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', format='png')
+plt.savefig('/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', format='png', bbox_inches='tight')
 
 '''
 plot_participation_ratios(averaged_results["Dsvds (Participation Ratio)"])
