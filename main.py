@@ -10,8 +10,8 @@ import pprint
 import random
 from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict
 
-thresholds = {3: 'top_3_words', 50: 'top_50_words', 100: 'top_100_words'}
-sample_size = 50
+thresholds = {3: 'top_3_words', 10: 'top_100_words', 200: 'top_200_words'}
+sample_size = 60
 
 access_token = "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"
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
