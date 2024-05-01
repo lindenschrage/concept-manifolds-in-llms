@@ -54,11 +54,9 @@ for r in range(LOOPS):
 
     for threshold_name, values in msr.items():
         msr_results[threshold_name].append(values)
-        print("msr", msr_results[threshold_name])
 
     for threshold_name, values in dists_norm.items():
         dists_norm_results[threshold_name].append(values)
-        print("dist norm", dists_norm_results[threshold_name])
 
 ## AVERAGE RESULTS
 averaged_dsvds_results = average_results(dsvds_results)
@@ -85,5 +83,5 @@ plot_dsvds(averaged_dsvds_results, '/n/home09/lschrage/projects/llama/sompolinsk
 
 plot_dsvds(averaged_msr_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/MSR_Plot.png', 'Mean Squared Radius')
 
-plot_signal(dists_norm_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Signal_Plot.png', 'Normalized Dinstance')
+plot_signal(dists_norm_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Signal_Plot.png')
 
