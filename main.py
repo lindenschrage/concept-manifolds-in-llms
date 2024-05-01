@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import pprint
 import random
-from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_dsvds, average_results, plot_signal
+from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_data, average_results, plot_signal
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
@@ -79,9 +79,9 @@ for key, avg in dists_norm_results.items():
     print(f"{key}: {avg}")
 
 ## GRAPH RESULTS
-plot_dsvds(averaged_dsvds_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', 'Dsvds (Participation Ratio)')
+plot_data(averaged_dsvds_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', 'Dsvds (Participation Ratio)')
 
-plot_dsvds(averaged_msr_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/MSR_Plot.png', 'Mean Squared Radius')
+plot_data(averaged_msr_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/MSR_Plot.png', 'Mean Squared Radius')
 
 plot_signal(dists_norm_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Signal_Plot.png')
 

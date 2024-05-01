@@ -144,7 +144,7 @@ def average_results(results):
         averaged_results[key] = np.mean(np.array(arrays), axis=0)
     return averaged_results
 
-def plot_dsvds(data, save_path, value):
+def plot_data(data, save_path, value):
     fig, ax = plt.subplots(figsize=(12, 8))
     thresholds = list(data.keys())
     indices = np.arange(len(data[thresholds[0]]))  
@@ -155,24 +155,21 @@ def plot_dsvds(data, save_path, value):
         ax.bar(bar_positions, data[threshold], width=bar_width, label=threshold.replace('_', ' ').title(), color=colors[i])
     ax.set_xlabel('Concepts', fontsize=14, fontweight='bold')
     ax.set_ylabel(value, fontsize=14, fontweight='bold')
-    ax.set_title('{value} for Different Thresholds', fontsize=16, fontweight='bold')
-    ax.set_xticks(indices + bar_width)
+    ax.set_title(f'{value} for Different Thresholds', fontsize=16, fontweight='bold')  
+    ax.set_xticks(indices + bar_width * (len(thresholds) - 1) / 2) 
     ax.set_xticklabels(['Dog', 'Apple', 'Pen'], fontsize=12)
     ax.legend(title='Thresholds', title_fontsize='13', fontsize='11', loc='upper left', bbox_to_anchor=(1.04, 1), borderaxespad=0.)
     plt.subplots_adjust(right=0.75)
     plt.savefig(save_path, format='png', bbox_inches='tight')
 
+
 def plot_signal (data, save_path):
     labels = ['dog', 'apple', 'pencil']
-
-    # Plotting
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-
-    # Iterate over dictionary items
     for ax, (title, matrix) in zip(axes, data.items()):
         sns.heatmap(matrix, annot=True, ax=ax, cmap="Reds")
         ax.set_title(title)
         ax.set_xticklabels(labels)  
         ax.set_yticklabels(labels)  
 
-    plt.show()
+    plt.savefig(save_path, format='png', bbox_inches='tight')
