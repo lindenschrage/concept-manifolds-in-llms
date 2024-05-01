@@ -90,6 +90,7 @@ def process_geometry(geometry):
     dsvds = {}
     bias = {}
     signal = {}
+    msr = {}
 
     for key in centers.keys():
         matrix = squareform(pdist(centers[key]))
@@ -105,7 +106,9 @@ def process_geometry(geometry):
         bias[key] = m[:, None] / m - 1
         signal[key] = dists_norm[key]**2 + bias[key]
 
-    return dists, dists_norm, dsvds, bias, signal
+        msr[key] = np.array(MSR[key])
+
+    return dists, dists_norm, dsvds, bias, signal, msr
 
 def convert_to_serializable(obj):
     if isinstance(obj, np.ndarray):
@@ -134,38 +137,26 @@ def sample_tensors_from_dict(data, num_to_sample):
                 new_data[key][threshold] = None  
     return new_data
 
+def average_results(results):
+    averaged_results = {}
+    for key, arrays in results.items():
+        averaged_results[key] = np.mean(np.array(arrays), axis=0)
+    return averaged_results
+
 def plot_dsvds(data, save_path):
-    # Set up the figure and axis
     fig, ax = plt.subplots(figsize=(12, 8))
-
-    # Data preparation
     thresholds = list(data.keys())
-    indices = np.arange(len(data[thresholds[0]]))  # the number of bars per group
-    bar_width = 0.25  # width of bars
-
-    # Color palette for visual appeal
+    indices = np.arange(len(data[thresholds[0]]))  
+    bar_width = 0.25  
     colors = ['#6aabd1', '#b6d957', '#ef8354']
-
-    # Plotting
     for i, threshold in enumerate(thresholds):
         bar_positions = indices + i * bar_width
         ax.bar(bar_positions, data[threshold], width=bar_width, label=threshold.replace('_', ' ').title(), color=colors[i])
-
-    # Labeling and aesthetics
     ax.set_xlabel('Concepts', fontsize=14, fontweight='bold')
     ax.set_ylabel('Dsvds (Participation Ratio)', fontsize=14, fontweight='bold')
     ax.set_title('Dsvds Averaged Values for Different Thresholds', fontsize=16, fontweight='bold')
     ax.set_xticks(indices + bar_width)
     ax.set_xticklabels(['Dog', 'Apple', 'Pen'], fontsize=12)
-    
-    # Legend position to the right of the plot
     ax.legend(title='Thresholds', title_fontsize='13', fontsize='11', loc='upper left', bbox_to_anchor=(1.04, 1), borderaxespad=0.)
-
-    # Adjust layout to make room for the legend
     plt.subplots_adjust(right=0.75)
-
-    # Save the plot to a file
     plt.savefig(save_path, format='png', bbox_inches='tight')
-
-    # Show the plot
-    plt.show()

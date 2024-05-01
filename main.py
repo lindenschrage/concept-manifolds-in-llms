@@ -8,13 +8,12 @@ import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import pprint
 import random
-from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_dsvds
+from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_dsvds, average_results
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
-results = {key: [] for key in thresholds.values()}
 SAMP_SIZE = 76
 LOOPS = 100
 
@@ -35,7 +34,6 @@ with open(input_filepath, 'r') as file:
 ## GENERATE EMBEDDINGS
 toplayerdict = get_embedding_dict(thresholds, inputs_dict, llama_model, llama_tokenizer)
 
-
 for r in range(LOOPS):
     new_data = sample_tensors_from_dict(toplayerdict, SAMP_SIZE)
 
@@ -44,17 +42,34 @@ for r in range(LOOPS):
 
     ## CALCULATE MANIFOLD GEOMETRY
     geometry = compute_geometry(data_dict)
-    dists, dists_norm, dsvds, bias, signal = process_geometry(geometry)
+    dists, dists_norm, dsvds, bias, signal, msr = process_geometry(geometry)
+
+    ## CALCULATE DSVD, MSR FOR KEY, THRESHOLD
+    dsvds_results = {key: [] for key in thresholds.values()}
+    msr_results = {key: [] for key in thresholds.values()}
+
     for threshold_name, values in dsvds.items():
-        results[threshold_name].append(values)
+        dsvds_results[threshold_name].append(values)
+
+    for threshold_name, values in msr.items():
+        msr_results[threshold_name].append(values)
 
 ## AVERAGE RESULTS
-averaged_results = {}
-for key, arrays in results.items():
-    averaged_results[key] = np.mean(np.array(arrays), axis=0)
+averaged_dsvds_results = average_results(dsvds_results)
+averaged_msr_results = average_results(msr_results)
+
+## PRINT DIMENSTIONALITY
 print("Averaged Dsvds (Participation Ratio) for each threshold:")
-for key, avg in averaged_results.items():
+for key, avg in averaged_dsvds_results.items():
+    print(f"{key}: {avg}")
+
+## PRINT MSR
+print("Averaged Dsvds (Participation Ratio) for each threshold:")
+for key, avg in averaged_msr_results.items():
     print(f"{key}: {avg}")
 
 ## GRAPH RESULTS
-plot_dsvds(averaged_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png')
+plot_dsvds(averaged_dsvds_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png')
+
+plot_dsvds(averaged_msr_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/MSR_Plot.png')
+
