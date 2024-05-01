@@ -11,7 +11,11 @@ import random
 from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_data, average_results, plot_signal
 from collections import defaultdict
 import matplotlib.pyplot as plt
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+access_token = os.getenv('ACCESS_TOKEN')
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
 SAMP_SIZE = 76
