@@ -1,4 +1,5 @@
 from transformers import LlamaTokenizer, LlamaForCausalLM
+import seaborn as sns
 import torch
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
@@ -160,3 +161,18 @@ def plot_dsvds(data, save_path, value):
     ax.legend(title='Thresholds', title_fontsize='13', fontsize='11', loc='upper left', bbox_to_anchor=(1.04, 1), borderaxespad=0.)
     plt.subplots_adjust(right=0.75)
     plt.savefig(save_path, format='png', bbox_inches='tight')
+
+def plot_signal (data, save_path):
+    labels = ['dog', 'apple', 'pencil']
+
+    # Plotting
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+    # Iterate over dictionary items
+    for ax, (title, matrix) in zip(axes, data.items()):
+        sns.heatmap(matrix, annot=True, ax=ax, cmap="Reds")
+        ax.set_title(title)
+        ax.set_xticklabels(labels)  
+        ax.set_yticklabels(labels)  
+
+    plt.show()

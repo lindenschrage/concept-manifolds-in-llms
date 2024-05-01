@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.spatial.distance import pdist, squareform
 import pprint
 import random
-from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_dsvds, average_results
+from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_dsvds, average_results, plot_signal
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
@@ -54,7 +54,7 @@ for r in range(LOOPS):
 
     for threshold_name, values in msr.items():
         msr_results[threshold_name].append(values)
-        print("msr", dists_norm_results[threshold_name])
+        print("msr", msr_results[threshold_name])
 
     for threshold_name, values in dists_norm.items():
         dists_norm_results[threshold_name].append(values)
@@ -85,4 +85,5 @@ plot_dsvds(averaged_dsvds_results, '/n/home09/lschrage/projects/llama/sompolinsk
 
 plot_dsvds(averaged_msr_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/MSR_Plot.png', 'Mean Squared Radius')
 
-plot_dsvds(dists_norm_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/dists_norm_Plot.png', 'Normalized Dinstance')
+plot_signal(dists_norm_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Signal_Plot.png', 'Normalized Dinstance')
+
