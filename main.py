@@ -17,8 +17,8 @@ from dotenv import load_dotenv
 
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
-SAMP_SIZE = 76
-LOOPS = 100
+SAMP_SIZE = 83
+LOOPS = 300
 
 ## LOAD HUGGING FACE ACCESS TOKEN FROM .env
 load_dotenv()
