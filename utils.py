@@ -177,18 +177,20 @@ def plot_signal (data, save_path):
 def plot_signal(data, save_path):
     labels = ['dog', 'apple', 'pencil']
     fig, axes = plt.subplots(1, len(data), figsize=(15, 5))  # Adjust the number of subplots dynamically
-    
+
     for ax, (title, matrix) in zip(axes.flatten(), data.items()):
+        if isinstance(matrix[0], list):  # Check if the matrix is a list of lists
+            matrix = np.array(matrix)  # Convert the list of lists to a NumPy array
+
         if matrix.ndim == 3:  # Check if the matrix is 3D
             matrix = matrix.squeeze()  # Reduce it to 2D if it is only a single 3D matrix (e.g., shape (1, 3, 3))
-        
-        if matrix.shape == (1, 3, 3):  # Additional check if it's still wrapped in an extra dimension
-            matrix = matrix[0]  # Select the first matrix in the set
-        
+            if matrix.shape == (1, 3, 3):  # Additional check if it's still wrapped in an extra dimension
+                matrix = matrix[0]  # Select the first matrix in the set
+
         sns.heatmap(pd.DataFrame(matrix), annot=True, ax=ax, cmap="Reds")
         ax.set_title(title)
         ax.set_xticklabels(labels)
         ax.set_yticklabels(labels)
-    
+
     plt.savefig(save_path, format='png', bbox_inches='tight')
     plt.close()
