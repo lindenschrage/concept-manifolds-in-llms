@@ -31,6 +31,10 @@ llama_model = LlamaForCausalLM.from_pretrained(
 
 ## OPEN 
 input_filepath = os.getenv('INPUT_FILEPATH')
+if input_filepath is None:
+    print("INPUT_FILEPATH not found in .env file")
+else:
+    print("INPUT_FILEPATH:", input_filepath)
 
 with open(input_filepath, 'r') as file:
     inputs_dict = json.load(file)
