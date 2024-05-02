@@ -1,10 +1,8 @@
-from transformers import LlamaTokenizer, LlamaForCausalLM
 import seaborn as sns
 import torch
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 import random
-import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import torch
@@ -110,16 +108,6 @@ def process_geometry(geometry):
         msr[key] = np.array(MSR[key])
 
     return dists, dists_norm, dsvds, bias, signal, msr
-
-def convert_to_serializable(obj):
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()  
-    elif isinstance(obj, list):
-        return [convert_to_serializable(item) for item in obj]  
-    elif isinstance(obj, dict):
-        return {key: convert_to_serializable(value) for key, value in obj.items()}  
-    else:
-        return obj 
 
 def sample_tensors_from_dict(data, num_to_sample):
     def sample_tensors(tensors, num):

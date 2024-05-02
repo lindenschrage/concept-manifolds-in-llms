@@ -1,20 +1,10 @@
 from transformers import LlamaTokenizer, LlamaForCausalLM
-import transformers
-import torch
 import torch.nn.functional as F
 import json
-import numpy as np
-import pandas as pd
 from scipy.spatial.distance import pdist, squareform
-import pprint
-import random
-from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, convert_to_serializable, sample_tensors_from_dict, plot_data, average_results, plot_signal
-from collections import defaultdict
-import matplotlib.pyplot as plt
+from utils import get_embedding_dict, dict_to_json, compute_geometry, process_geometry, sample_tensors_from_dict, plot_data, average_results, plot_signal
 import os
 from dotenv import load_dotenv
-
-
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
 SAMP_SIZE = 83
@@ -24,6 +14,8 @@ LOOPS = 300
 load_dotenv()
 access_token = os.getenv('ACCESS_TOKEN')
 
+
+## LOAD HUGGING FACE LLAMA TOKENIZER AND MODEL
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
 
 llama_model = LlamaForCausalLM.from_pretrained(
