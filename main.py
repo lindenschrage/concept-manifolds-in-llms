@@ -14,13 +14,15 @@ import matplotlib.pyplot as plt
 import os
 from dotenv import load_dotenv
 
-## LOAD HUGGING FACE ACCESS TOKEN FROM .env
-load_dotenv()
-access_token = os.getenv('ACCESS_TOKEN')
+
 
 thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
 SAMP_SIZE = 76
-LOOPS = 10
+LOOPS = 100
+
+## LOAD HUGGING FACE ACCESS TOKEN FROM .env
+load_dotenv()
+access_token = os.getenv('ACCESS_TOKEN')
 
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
 
