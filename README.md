@@ -11,7 +11,7 @@ Before running the scripts, ensure you have the following prerequisites set up:
 
 1. **Python Virtual Environment**: It is recommended to use a virtual environment to manage dependencies.
 
-2. **Dependencies**: Install all required Python modules using pip: pip install numpy pandas matplotlib seaborn torch transformers dotenv
+2. **Dependencies**: Install all required Python modules using pip (found in requirements.txt)
 
 3. **Environment Variables**: The Hugging Face access token is required to fetch models and is stored in a `.env` file. Ensure you have this file configured with the following content: ACCESS_TOKEN='your_hugging_face_access_token_here'
 
