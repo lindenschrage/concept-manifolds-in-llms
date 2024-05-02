@@ -66,7 +66,7 @@ for r in range(LOOPS):
 averaged_dsvds_results = average_results(dsvds_results)
 averaged_msr_results = average_results(msr_results)
 averaged_dists_norm_results = average_results(dists_norm_results)
-
+'''
 ## PRINT DIMENSTIONALITY
 print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for key, avg in averaged_dsvds_results.items():
@@ -76,12 +76,13 @@ for key, avg in averaged_dsvds_results.items():
 print("Averaged MSR for each threshold:")
 for key, avg in averaged_msr_results.items():
     print(f"{key}: {avg}")
-
+'''
 ## PRINT DISTANCES
 print("Averaged dists_norm for each threshold:")
 for key, avg in dists_norm_results.items():
     print(f"{key}: {avg}")
-
+for key, avg in dists_norm_results.items():
+    print(f"{key}: {avg}, Type: {type(avg)}")
 ## GRAPH RESULTS
 plot_data(averaged_dsvds_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/Dsvds_Participation_Ratio_Plot.png', 'Dsvds (Participation Ratio)')
 

@@ -179,8 +179,8 @@ def plot_signal(data, save_path):
     fig, axes = plt.subplots(1, len(data), figsize=(15, 5))  # Adjust the number of subplots dynamically
 
     for ax, (title, matrix) in zip(axes.flatten(), data.items()):
-        if isinstance(matrix[0], list):  # Check if the matrix is a list of lists
-            matrix = np.array(matrix)  # Convert the list of lists to a NumPy array
+        if isinstance(matrix, list):  # Check if the matrix is a list
+            matrix = np.array(matrix)  # Convert the list to a NumPy array
 
         if matrix.ndim == 3:  # Check if the matrix is 3D
             matrix = matrix.squeeze()  # Reduce it to 2D if it is only a single 3D matrix (e.g., shape (1, 3, 3))
