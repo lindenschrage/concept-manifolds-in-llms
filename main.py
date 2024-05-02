@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import os
 from dotenv import load_dotenv
 
+## LOAD HUGGING FACE ACCESS TOKEN FROM .env
 load_dotenv()
 access_token = os.getenv('ACCESS_TOKEN')
 
@@ -21,7 +22,6 @@ thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
 SAMP_SIZE = 76
 LOOPS = 10
 
-#access_token = "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"
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
 
 llama_model = LlamaForCausalLM.from_pretrained(
@@ -30,11 +30,7 @@ llama_model = LlamaForCausalLM.from_pretrained(
     output_hidden_states=True).to('cuda')
 
 ## OPEN 
-input_filepath = os.getenv('INPUT_FILEPATH')
-if input_filepath is None:
-    print("INPUT_FILEPATH not found in .env file")
-else:
-    print("INPUT_FILEPATH:", input_filepath)
+input_filepath = 'long_inputs.json'
 
 with open(input_filepath, 'r') as file:
     inputs_dict = json.load(file)
