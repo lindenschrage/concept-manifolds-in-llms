@@ -21,7 +21,7 @@ thresholds = {5: 'top_5_words', 100: 'top_100_words', 300: 'top_300_words'}
 SAMP_SIZE = 76
 LOOPS = 10
 
-access_token = "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"
+#access_token = "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"
 llama_tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", token=access_token)
 
 llama_model = LlamaForCausalLM.from_pretrained(
@@ -30,7 +30,7 @@ llama_model = LlamaForCausalLM.from_pretrained(
     output_hidden_states=True).to('cuda')
 
 ## OPEN 
-input_filepath = '/n/home09/lschrage/projects/llama/sompolinsky-research/long_inputs.json'
+input_filepath = os.getenv('INPUT_FILEPATH')
 
 with open(input_filepath, 'r') as file:
     inputs_dict = json.load(file)
@@ -66,7 +66,7 @@ for r in range(LOOPS):
 averaged_dsvds_results = average_results(dsvds_results)
 averaged_msr_results = average_results(msr_results)
 averaged_dists_norm_results = average_results(dists_norm_results)
-'''
+
 ## PRINT DIMENSTIONALITY
 print("Averaged Dsvds (Participation Ratio) for each threshold:")
 for key, avg in averaged_dsvds_results.items():
@@ -76,13 +76,11 @@ for key, avg in averaged_dsvds_results.items():
 print("Averaged MSR for each threshold:")
 for key, avg in averaged_msr_results.items():
     print(f"{key}: {avg}")
-'''
+
 ## PRINT DISTANCES
 print("Averaged dists_norm for each threshold:")
 for key, avg in dists_norm_results.items():
     print(f"{key}: {avg}")
-for key, avg in dists_norm_results.items():
-    print(f"{key}: {avg}, Type: {type(avg)}")
     
 ## GRAPH RESULTS
 plot_data(averaged_dsvds_results, '/n/home09/lschrage/projects/llama/sompolinsky-research/plots/Dsvds_Participation_Ratio_Plot.png', 'Dsvds (Participation Ratio)')
